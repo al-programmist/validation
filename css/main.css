@@ -16,3 +16,33 @@ textarea {
 .control--agreement {
     cursor: pointer;
 }
+
+.footer,
+.header {
+    color: var(--bs-white);
+    background-color: var(--bs-primary);
+}
+
+.footer .container {
+    min-height: 50px;
+}
+
+.header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.h1 {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.main {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.footer p {
+    margin: 0;
+    line-height: 1;
+}
