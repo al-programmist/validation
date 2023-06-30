@@ -1,0 +1,18 @@
+textarea {
+    width: 100%;
+    height: 5rem;
+    resize: none;
+}
+
+.control {
+    display: block;
+}
+
+.control__caption {
+    margin-bottom: .2rem;
+    display: inline-block;
+}
+
+.control--agreement {
+    cursor: pointer;
+}

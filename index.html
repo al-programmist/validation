@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="css/main.css">
     <title>Стандартная валидация форм</title>
 </head>
+
 <body>
     <div class="site">
         <header class="header">
@@ -17,7 +19,59 @@
         <main class="main">
             <div class="container">
                 <div class="row">
-                    <div class="col-12 col-md-6">1</div>
+                    <div class="col-12 col-md-6">
+                        <form class="form" action="#" method="post" enctype="multipart/form-data">
+                            <fieldset>
+                                <legend class="form__caption">Заголовок формы</legend>
+                                <div class="mb-3">
+                                    <label class="form-label control">
+                                        <span class="control__caption">Ваше имя</span>
+                                        <input class="form-control control__input" type="text" name="username"
+                                            placeholder="Например: Иванов Иван Иванович" required>
+                                        <span class="invalid-feedback">Имя не должно быть пустым. Это обязательное поле.
+                                            Оно должно начинаться с большой буквы и не содержать спецсимволов</span>
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label control">
+                                        <span class="control__caption">Адрес электронной почты</span>
+                                        <input class="form-control control__input" type="email" name="email"
+                                            placeholder="Например: name@example.com" required>
+                                        <span class="invalid-feedback">Введите email в правильном формате. Это
+                                            обязательное поле. Email не должен содержать спецсимвовов. Допустимые
+                                            символы: -, ., _, @, а также строчные буквы и цифры.
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label control">
+                                        <span class="control__caption">Комментарий</span>
+                                        <textarea class="form-control control__textarea" name="comment"
+                                            placeholder="Введите ваш комментарий"></textarea>
+                                    </label>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <label class="form-check-label control control--agreement">
+                                        <input type="checkbox"
+                                            class="form-check-input control__checkbox control--agreement" name="agreement" required>
+                                        <div class="control__caption">Я подтверждаю правильность введенных мною данных
+                                        </div>
+                                        <div class="invalid-feedback">Вы не подтвердили правильность введенных вами
+                                            данных
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <button class="btn btn-primary" type="submit">Отправить форму</button>
+                                </div>
+                            </fieldset>
+
+                        </form>
+                    </div>
                     <div class="col-12 col-md-6">2</div>
                 </div>
                 <div class="row">
@@ -39,4 +93,5 @@
     <script src="js/just-validate@4.2.0_dist_just-validate.production.min.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
