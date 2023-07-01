@@ -27,8 +27,8 @@
                                     <label class="form-label control">
                                         <span class="control__caption">Ваше имя</span>
                                         <input class="form-control js-control-input" type="text" name="username"
-                                            placeholder="Например: Иванов Иван Иванович" required>
-                                        <span class="invalid-feedback">Имя не должно быть пустым. Это обязательное поле.
+                                            placeholder="Например: Иванов Иван Иванович" minlength="3" pattern="\w{3,30}" required>
+                                        <span class="invalid-tooltip">Имя не должно быть пустым. Это обязательное поле.
                                             Оно должно начинаться с большой буквы и не содержать спецсимволов</span>
                                     </label>
                                 </div>
@@ -36,9 +36,8 @@
                                 <div class="mb-3">
                                     <label class="form-label control">
                                         <span class="control__caption">Адрес электронной почты</span>
-                                        <input class="form-control js-control-input" type="email" name="email"
-                                            placeholder="Например: name@example.com" required>
-                                        <span class="invalid-feedback">Введите email в правильном формате. Это
+                                        <input class="form-control js-control-input" type="email" name="email" placeholder="Например: name@example.com" required>
+                                        <span class="invalid-tooltip">Введите email в правильном формате. Это
                                             обязательное поле. Email не должен содержать спецсимвовов. Допустимые
                                             символы: -, ., _, @, а также строчные буквы и цифры.
                                         </span>
@@ -48,7 +47,7 @@
                                 <div class="mb-3">
                                     <label class="form-label control">
                                         <span class="control__caption">Комментарий</span>
-                                        <textarea class="form-control control__textarea" name="comment"
+                                        <textarea class="control__textarea" name="comment"
                                             placeholder="Введите ваш комментарий"></textarea>
                                     </label>
                                 </div>
@@ -59,7 +58,7 @@
                                             class="form-check-input js-control-input control--agreement" name="agreement" required>
                                         <div class="control__caption">Я подтверждаю правильность введенных мною данных
                                         </div>
-                                        <div class="invalid-feedback">Вы не подтвердили правильность введенных вами
+                                        <div class="invalid-tooltip">Вы не подтвердили правильность введенных вами
                                             данных
                                         </div>
                                     </label>
