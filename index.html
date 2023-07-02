@@ -78,8 +78,8 @@
                                 <div class="mb-3">
                                     <label class="form-label control">
                                         <span class="control__caption">Ваше имя</span>
-                                        <input class="form-control" type="text" name="username"
-                                            placeholder="Например: Иванов Иван Иванович" minlength="3" pattern="\w{3,30}" required>
+                                        <input class="form-control" type="text" name="username" data-type="name"
+                                            placeholder="Например: Иванов Иван Иванович" required>
                                         <span class="invalid-tooltip"></span>
                                     </label>
                                 </div>
@@ -87,7 +87,7 @@
                                 <div class="mb-3">
                                     <label class="form-label control">
                                         <span class="control__caption">Адрес электронной почты</span>
-                                        <input class="form-control" type="email" name="email" placeholder="Например: name@example.com" required>
+                                        <input class="form-control" type="email" data-type="email" name="email" placeholder="Например: name@example.com" required>
                                         <span class="invalid-tooltip">
                                         </span>
                                     </label>
@@ -103,7 +103,7 @@
 
                                 <div class="form-check mb-3">
                                     <label class="form-check-label control control--agreement">
-                                        <input type="checkbox"
+                                        <input type="checkbox" data-type="agreement"
                                             class="form-check-input control--agreement" name="agreement" required>
                                         <div class="control__caption">Я подтверждаю правильность введенных мною данных
                                         </div>
