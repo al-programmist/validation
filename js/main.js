@@ -27,9 +27,9 @@ const Validity = {
     rules: {
         email: {
             required: true,
-            pattern: /^(?!.{321})((?:\w+[.-])*\w{1,64})(@)(\w{1,255}(?:[.-]\w+)*\.\w{2,3})$/,
             minlength: 5,
-            maxlength: 50,
+            maxlength: 10,
+            pattern: /^(?!.{321})((?:\w+[.-])*\w{1,64})(@)(\w{1,255}(?:[.-]\w+)*\.\w{2,3})$/,
             errorMessage: {
                 required: 'Поле не должно быть пустым',
                 pattern: 'Введите email в правильном формате. Это обязательное поле. Email не должен содержать спецсимвовов. Допустимые символы: -, ., _, @, а также строчные буквы и цифры.',
@@ -39,9 +39,9 @@ const Validity = {
         },
         name: {
             required: true,
-            pattern: /^[A-zА-я\s\-]*$/,
             minlength: 2,
             maxlength: 50,
+            pattern: /^[A-zА-я\s\-]*$/,
             errorMessage: {
                 required: 'Поле не должно быть пустым',
                 pattern: 'Введите ваше имя в нужном формате. Оно должно начинаться с большой буквы и не содержать спецсимволов',
@@ -97,24 +97,31 @@ const Validity = {
     //Написать функцию валидации элемента
     //Написать функцию валидации формы
 
+    /**
+     * 
+     * @param {*} element - DOM-элемент формы
+     * @returns - Объект или true
+     */
     isValid(element) {
         if (element) {
             let currentRules = this.getCurrentRules(element);
             let value = String(element.value).trim();
             let ruleValue;
             let currentErrorMessage;
-            
+            console.log(currentRules);
             for (let rule in currentRules) {
                 if (rule !== 'errorMessage') {
+                    console.log(rule);
+                    
                     ruleValue = currentRules[rule];
                     currentErrorMessage = this.getCurrentErrorMessage(rule, element);
                     if (rule === 'required' && (!value.length)) {
                         return {
                             'result': false,
-                            'rule': rule,
                             'error': currentErrorMessage,
                         }
-                    } else
+                    } else 
+                    
                     if (rule === 'minlength' && (value.length < ruleValue)) {
                         return {
                             'result': false,
@@ -122,13 +129,15 @@ const Validity = {
                             'error': currentErrorMessage,
                         }
                     } else
+                    
                     if (rule === 'maxlength' && (value.length > ruleValue)) {
                         return {
                             'result': false,
                             'rule': rule,
                             'error': currentErrorMessage,
                         }
-                    } else
+                    } 
+                    else
                     if (rule === 'pattern' && (!ruleValue.test(value))) {
                         return {
                             'result': false,
@@ -136,8 +145,6 @@ const Validity = {
                             'error': currentErrorMessage,
                         }
                     };
-                    
-
                     
                 }
             }
@@ -147,11 +154,28 @@ const Validity = {
 
     },
 
+    validateElement(element) {
+        let isValid = this.isValid(element);
+        const errorSelectorMessage = element.closest('.control').querySelector(this.selectors.message);
+       
+        if (typeof(isValid)!== 'boolean') {
+            element.classList.add('is-invalid'); 
+            errorSelectorMessage.textContent = isValid.error;
+            console.log(isValid);
+            return;
+        }
+
+        element.classList.remove('is-invalid');
+        element.classList.add('is-valid');
+        errorSelectorMessage.textContent = "";
+
+    },
+
     onChange(element) {
         element.addEventListener('change', event => {
             event.preventDefault()
             event.stopPropagation();
-            console.log(this.isValid(element));
+            this.validateElement(element);
         }, false)
 
     },
