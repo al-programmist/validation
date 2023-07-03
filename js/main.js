@@ -199,7 +199,7 @@ const Validity = {
             button.removeAttribute('disabled');
             return true;
         }
-        
+
         form.classList.add('form-error');
         form.classList.remove('form-valid');
         button.setAttribute('disabled', true);
@@ -228,14 +228,14 @@ const Validity = {
                         element.classList.add('is-invalid')
                     }
                 });
-    
+
                 button.setAttribute('disabled', true);
                 form.classList.add('form-error')
             } else {
                 form.submit();
             }
 
-           
+
 
         }, false)
     },
@@ -328,3 +328,68 @@ const Validity = {
 
 let start = Validity.init.bind(Validity); // Привязка контекста this к валидатору
 start('.js-form-native'); // Запуск валидатора
+
+// Валидация Just Validate
+(() => {
+    'use strict';
+    const validator = new JustValidate('.js-just-validate', {
+        errorFieldCssClass: 'is-invalid',
+        successFieldCssClass: 'is-valid',
+        errorLabelCssClass: 'invalid-tooltip',
+        errorLabelStyle: {
+            color: '#fff'
+          }
+    });
+
+    validator
+        .addField(
+            '.username', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле не может быть пустым',
+            },
+            {
+                rule: 'minLength',
+                value: 2,
+                errorMessage: 'Значение не может быть короче 2 символов',
+            },
+            {
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'Значение не может быть длиннее 50 символов',
+            },
+        ])
+        .addField(
+            '.email', [
+            {
+                rule: 'required',
+                errorMessage: 'Поле не может быть пустым',
+            },
+            {
+                rule: 'minLength',
+                value: 2,
+                errorMessage: 'Значение не может быть короче 2 символов',
+            },
+            {
+                rule: 'maxLength',
+                value: 50,
+                errorMessage: 'Значение не может быть длиннее 50 символов',
+            },
+            {
+                rule: 'email',
+                errorMessage: 'Введите email в формате name@example.com'
+            }
+        ])
+        .addField(
+            '.agreement', [
+            {
+                rule: 'required',
+                errorMessage: 'Вы не подтвердили введенные вами данные'
+            },
+
+        ])
+        .onSuccess((event) => {
+            const form = event.target;
+            form.submit();
+          });
+})();

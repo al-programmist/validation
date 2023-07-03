@@ -73,3 +73,12 @@ textarea {
     outline: 0;
     box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
 }
+
+.error-tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    color: var(--bs-white) !important;
+    background-color: var(--bs-danger);
+}
