@@ -24,11 +24,12 @@ const Validity = {
     elements: [],
     buttons: [],
 
+    //ВНИМАНИЕ! От очередности свойств этого объекта зависит очередность проверки полей. По умолчанию принято так: проверка на заполнение, минимальную длину, максимальную длину, паттерн.
     rules: {
         email: {
             required: true,
             minlength: 5,
-            maxlength: 10,
+            maxlength: 50,
             pattern: /^(?!.{321})((?:\w+[.-])*\w{1,64})(@)(\w{1,255}(?:[.-]\w+)*\.\w{2,3})$/,
             errorMessage: {
                 required: 'Поле не должно быть пустым',
@@ -58,14 +59,20 @@ const Validity = {
     },
 
     selectors: {
-        validated: '.was-validated',
         success: '.is-valid',
         error: '.is-invalid',
         message: '.invalid-tooltip'
     },
 
-    onKeyUp() {
+    onKeyUp(element, instance) {
+        const form = element.closest('.form');
+        element.addEventListener('keyup', event => {
+            if (form.classList.contains('form-error')) {
 
+                this.validateElement(element);
+                this.checkForm(element, instance);
+            }
+        }, false)
     },
 
     /**
@@ -93,12 +100,9 @@ const Validity = {
         return errorMessages[rule];
     },
 
-    //
-    //Написать функцию валидации элемента
-    //Написать функцию валидации формы
 
     /**
-     * 
+     * Валидация Native Javascript
      * @param {*} element - DOM-элемент формы
      * @returns - Объект или true
      */
@@ -108,44 +112,50 @@ const Validity = {
             let value = String(element.value).trim();
             let ruleValue;
             let currentErrorMessage;
-            console.log(currentRules);
+            let currentType = String(element.attributes.type.value);
             for (let rule in currentRules) {
                 if (rule !== 'errorMessage') {
-                    console.log(rule);
-                    
                     ruleValue = currentRules[rule];
                     currentErrorMessage = this.getCurrentErrorMessage(rule, element);
-                    if (rule === 'required' && (!value.length)) {
-                        return {
-                            'result': false,
-                            'error': currentErrorMessage,
+                    if (rule === 'required') {
+                        if ((currentType === 'checkbox' || currentType === 'radio') && !element.checked) {
+                            return {
+                                'result': false,
+                                'error': currentErrorMessage,
+                            }
                         }
-                    } else 
-                    
-                    if (rule === 'minlength' && (value.length < ruleValue)) {
-                        return {
-                            'result': false,
-                            'rule': rule,
-                            'error': currentErrorMessage,
-                        }
+
+                        if (!value.length)
+                            return {
+                                'result': false,
+                                'error': currentErrorMessage,
+                            }
                     } else
-                    
-                    if (rule === 'maxlength' && (value.length > ruleValue)) {
-                        return {
-                            'result': false,
-                            'rule': rule,
-                            'error': currentErrorMessage,
-                        }
-                    } 
-                    else
-                    if (rule === 'pattern' && (!ruleValue.test(value))) {
-                        return {
-                            'result': false,
-                            'rule': rule,
-                            'error': currentErrorMessage,
-                        }
-                    };
-                    
+
+                        if (rule === 'minlength' && (value.length < ruleValue)) {
+                            return {
+                                'result': false,
+                                'rule': rule,
+                                'error': currentErrorMessage,
+                            }
+                        } else
+
+                            if (rule === 'maxlength' && (value.length > ruleValue)) {
+                                return {
+                                    'result': false,
+                                    'rule': rule,
+                                    'error': currentErrorMessage,
+                                }
+                            }
+                            else
+                                if (rule === 'pattern' && (!ruleValue.test(value))) {
+                                    return {
+                                        'result': false,
+                                        'rule': rule,
+                                        'error': currentErrorMessage,
+                                    }
+                                };
+
                 }
             }
 
@@ -154,34 +164,80 @@ const Validity = {
 
     },
 
+    /**
+     * Устанавливает состояние элемента на форме
+     * @param {*} element - DOM-элемент
+     * @returns 
+     */
     validateElement(element) {
         let isValid = this.isValid(element);
         const errorSelectorMessage = element.closest('.control').querySelector(this.selectors.message);
-       
-        if (typeof(isValid)!== 'boolean') {
-            element.classList.add('is-invalid'); 
+
+        if (typeof (isValid) !== 'boolean') {
+            element.classList.add('is-invalid');
+            element.classList.remove('is-valid');
             errorSelectorMessage.textContent = isValid.error;
-            console.log(isValid);
-            return;
+            return false;
         }
 
         element.classList.remove('is-invalid');
         element.classList.add('is-valid');
         errorSelectorMessage.textContent = "";
-
+        return true;
     },
 
-    onChange(element) {
+    checkForm(element, instance) {
+        // Сколько требуется - столько должно быть валидными
+        const form = element.closest('.form');
+        let required = this.getRequiredElements(instance).length;
+        let validElements = form.querySelectorAll('.is-valid').length;
+        let button = this.getFormButton(instance);
+
+        if (required === validElements) {
+            form.classList.add('form-valid');
+            form.classList.remove('form-error');
+            button.removeAttribute('disabled');
+            return true;
+        }
+        
+        form.classList.add('form-error');
+        form.classList.remove('form-valid');
+        button.setAttribute('disabled', true);
+        return false;
+    },
+
+    onChange(element, instance) {
         element.addEventListener('change', event => {
-            event.preventDefault()
+            event.preventDefault();
             event.stopPropagation();
             this.validateElement(element);
+            this.checkForm(element, instance);
         }, false)
-
     },
 
-    onSubmit() {
+    onSubmit(button, instance) {
+        const form = button.closest('.form');
+        const required = this.getRequiredElements(instance);
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            event.stopPropagation();
 
+            if (!form.classList.contains('form-valid')) {
+                required.forEach((element) => {
+                    if (!element.classList.contains('is-valid')) {
+                        element.classList.add('is-invalid')
+                    }
+                });
+    
+                button.setAttribute('disabled', true);
+                form.classList.add('form-error')
+            } else {
+                form.submit();
+            }
+
+           
+
+        }, false)
     },
 
     /**
@@ -193,13 +249,23 @@ const Validity = {
         return instance.form.elements;
     },
 
+    getFormButton(instance) {
+        return instance.form.buttons.submit;
+    },
+
+    /**
+     * Устанавливает обработчики формы
+     */
     setEvents() {
         const forms = this.elements;
         forms.forEach((instance) => {
             let elements = this.getRequiredElements(instance);
+            let button = this.getFormButton(instance);
             elements.forEach((element) => {
-                this.onChange(element);
+                this.onChange(element, instance);
+                this.onKeyUp(element, instance);
             });
+            this.onSubmit(button, instance);
         });
 
     },
@@ -260,6 +326,5 @@ const Validity = {
     },
 };
 
-let start = Validity.init.bind(Validity);
-
-start('.js-form-native');
+let start = Validity.init.bind(Validity); // Привязка контекста this к валидатору
+start('.js-form-native'); // Запуск валидатора
