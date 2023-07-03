@@ -29,20 +29,24 @@ const Validity = {
             required: true,
             pattern: /^(?!.{321})((?:\w+[.-])*\w{1,64})(@)(\w{1,255}(?:[.-]\w+)*\.\w{2,3})$/,
             minlength: 5,
+            maxlength: 50,
             errorMessage: {
                 required: 'Поле не должно быть пустым',
                 pattern: 'Введите email в правильном формате. Это обязательное поле. Email не должен содержать спецсимвовов. Допустимые символы: -, ., _, @, а также строчные буквы и цифры.',
                 minlength: 'Значение должно быть больше или равно 5 символам',
+                maxlength: 'Максимальная длина - не более 50 символов',
             }
         },
         name: {
             required: true,
             pattern: /^[A-zА-я\s\-]*$/,
             minlength: 2,
+            maxlength: 50,
             errorMessage: {
                 required: 'Поле не должно быть пустым',
                 pattern: 'Введите ваше имя в нужном формате. Оно должно начинаться с большой буквы и не содержать спецсимволов',
-                minlength: 'Имя должно начинаться с большой буквы и не содержать спецсимволов'
+                minlength: `Минимальная длина - не менее 2 символов`,
+                maxlength: 'Максимальная длина - не более 50 символов',
             }
         },
         agreement: {
@@ -71,7 +75,6 @@ const Validity = {
      */
     getCurrentRules(element) {
         if (element) {
-            // let value = String(element.value).trim();
             let currentRule = String(element.dataset.type).trim();
             return this.rules[currentRule];
         }
@@ -79,10 +82,67 @@ const Validity = {
         return false;
     },
 
-    validateElement(element) {
+    /**
+     * Вытаскивает текущее сообщение об ошибке
+     * @param {*} rule - правило, строка
+     * @param {*} element  - DOM-элемент формы
+     * @returns Строка
+     */
+    getCurrentErrorMessage(rule, element) {
+        const errorMessages = this.getCurrentRules(element)['errorMessage'];
+        return errorMessages[rule];
+    },
+
+    //
+    //Написать функцию валидации элемента
+    //Написать функцию валидации формы
+
+    isValid(element) {
         if (element) {
             let currentRules = this.getCurrentRules(element);
-            console.log(currentRules);
+            let value = String(element.value).trim();
+            let ruleValue;
+            let currentErrorMessage;
+            
+            for (let rule in currentRules) {
+                if (rule !== 'errorMessage') {
+                    ruleValue = currentRules[rule];
+                    currentErrorMessage = this.getCurrentErrorMessage(rule, element);
+                    if (rule === 'required' && (!value.length)) {
+                        return {
+                            'result': false,
+                            'rule': rule,
+                            'error': currentErrorMessage,
+                        }
+                    } else
+                    if (rule === 'minlength' && (value.length < ruleValue)) {
+                        return {
+                            'result': false,
+                            'rule': rule,
+                            'error': currentErrorMessage,
+                        }
+                    } else
+                    if (rule === 'maxlength' && (value.length > ruleValue)) {
+                        return {
+                            'result': false,
+                            'rule': rule,
+                            'error': currentErrorMessage,
+                        }
+                    } else
+                    if (rule === 'pattern' && (!ruleValue.test(value))) {
+                        return {
+                            'result': false,
+                            'rule': rule,
+                            'error': currentErrorMessage,
+                        }
+                    };
+                    
+
+                    
+                }
+            }
+
+            return true;
         }
 
     },
@@ -91,7 +151,7 @@ const Validity = {
         element.addEventListener('change', event => {
             event.preventDefault()
             event.stopPropagation();
-            this.validateElement(element);
+            console.log(this.isValid(element));
         }, false)
 
     },
