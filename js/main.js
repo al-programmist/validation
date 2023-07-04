@@ -406,9 +406,14 @@ start('.js-form-native'); // Запуск валидатора
 
     $.validator.setDefaults( {
         submitHandler: function (form) {
-            // form.submit();
-            // console.log(form);
-            // alert( "submitted!" );
+            let $form = $(form);
+            let url = $form.attr('action');
+
+            if(url.length) {
+                $.post(url, {text: 'Текст'}, function(data){
+                    alert(data);
+                });
+            }
         }
     } );
 
