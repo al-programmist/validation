@@ -411,8 +411,9 @@ start('.js-form-native'); // Запуск валидатора
 
             if(url.length) {
                 $.post(url, {text: 'Текст'}, function(data){
-                    alert(data);
+                    console.log(data);
                 });
+                //form.submit();
             }
         }
     } );
