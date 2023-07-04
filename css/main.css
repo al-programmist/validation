@@ -82,3 +82,14 @@ textarea {
     color: var(--bs-white) !important;
     background-color: var(--bs-danger);
 }
+
+.form {
+    padding: 20px;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: 5px;
+}
+
+.row {
+    --bs-gutter-y: 1.5rem;
+    margin-bottom: var(--bs-gutter-y);
+}

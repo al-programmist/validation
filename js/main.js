@@ -333,12 +333,13 @@ start('.js-form-native'); // Запуск валидатора
 (() => {
     'use strict';
     const validator = new JustValidate('.js-just-validate', {
+        lockForm: true,
         errorFieldCssClass: 'is-invalid',
         successFieldCssClass: 'is-valid',
         errorLabelCssClass: 'invalid-tooltip',
         errorLabelStyle: {
             color: '#fff'
-          }
+        }
     });
 
     validator
@@ -391,5 +392,80 @@ start('.js-form-native'); // Запуск валидатора
         .onSuccess((event) => {
             const form = event.target;
             form.submit();
-          });
+        });
+})();
+
+// Валидация Jquery Validate
+(() => {
+    'use strict';
+    const $document = $(document);
+    const $window = $(window);
+    
+    window.$ = $;
+    window.jQuery = $;
+
+    $.validator.setDefaults( {
+        submitHandler: function (form) {
+            // form.submit();
+            // console.log(form);
+            // alert( "submitted!" );
+        }
+    } );
+
+    $document.ready(() => {
+        const $form = $('.jquery-validate');
+
+        $form.validate({
+            rules: {
+                username: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50
+                },
+                email: {
+                    required: true,
+					email: true,
+                    minlength: 5,
+                    maxlength: 50
+                },
+                agree: {
+                    required: true
+                }
+            },
+            messages: {
+                username: {
+                    required: "Поле не должно быть пустым",
+                    minlength: "Имя должно содержать не меньше 2 символов",
+                    maxlength: "Имя не должно превышать 50 символов"
+                },
+                email: {
+                    required: "Поле не должно быть пустым",
+                    minlength: "Email должен содержать не меньше 2 символов",
+                    maxlength: "Email не должен превышать 50 символов",
+                    email: "Введите email в формате name@example.com"
+                },
+                agree: {
+                    required: "Вы не подтвердили правильность введенных вами данных"
+                }
+            },
+            errorElement: "div",
+            errorPlacement: function ( error, element ) {
+                // Add the `invalid-feedback` class to the error element
+                error.addClass( "invalid-tooltip" );
+
+                if ( element.prop( "type" ) === "checkbox" ) {
+                    error.insertAfter( element.next( "label" ) );
+                } else {
+                    error.insertAfter( element );
+                }
+            },
+            highlight: function ( element, errorClass, validClass ) {
+                $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+            }
+        });
+    })
+    
 })();
